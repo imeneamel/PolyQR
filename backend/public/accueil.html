@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>PolyQR - Accueil</title>
+    <style>
+        @keyframes shrinkAnimation {
+            0% {
+                transform: scale(1);
+            }
+            100% {
+                transform: scale(0.8);
+            }
+        }
+
+        @keyframes liftAnimation {
+            0% {
+                transform: translateY(0%);
+            }
+            100% {
+                transform: translateY(-40%);
+            }
+        }
+
+        @keyframes fadeInAnimation {
+            0% {
+                opacity: 0;
+            }
+            100% {
+                opacity: 1;
+            }
+        }
+
+        body.accueil button.start-button {
+            animation: fadeInAnimation 4s forwards; 
+        }
+
+
+        body.accueil img.shrink {
+            animation: shrinkAnimation 2s forwards;
+        }
+
+        body.accueil h1.title {
+            animation: liftAnimation 2s forwards;
+        }
+
+        body.accueil img.shrink {
+            transition: all 2s ease 3s;
+        }
+
+    </style>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var logoTitle = document.querySelector('.logo-title');
+            logoTitle.classList.add('shrink');
+        });
+    </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/meyer-reset/2.0/reset.min.css">
+    <link rel="stylesheet" href="./style.css">
+</head>
+
+<body class="accueil">
+
+    <div class="welcome">
+        <div class="logo-title">
+            <img class="shrink" src="logo.png">
+            <h1 class="title">PolyQR</h1>
+        </div>
+        <br>
+        <a href="/login" class="start-button">Commencer</a>
+    </div>
+
+    <script src='https://unpkg.com/phosphor-icons'></script>
+
+</body>
+
+</html>

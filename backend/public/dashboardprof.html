@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+  <meta charset="UTF-8">
+  <title>PolyQR</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/meyer-reset/2.0/reset.min.css">
+<link rel="stylesheet" href="./style.css">
+
+</head>
+<body>
+<!-- partial:index.partial.html -->
+<div class="app">
+	<header class="app-header">
+		<div class="app-header-logo">
+			<div class="logo">
+				<span class="logo-icon">
+					<img class='logopoly' src="logo.png" />
+				</span>
+				<h1 class="logo-title">
+					<span>PolyQR - Dashboard</span>
+					<span></span>
+				</h1>
+			</div>
+		</div>
+	</header>
+	<div class="app-body">
+		<div class="app-body-navigation">
+			<nav class="navigation">
+				<a href="#">
+					<i class="ph-browsers"></i>
+					<span>Dashboard</span>
+				</a>
+				<a href="#">
+					<i class="ph-check-square"></i>
+					<span>Evènements</span>
+				</a>
+				<a href="#">
+					<i class="ph-gear"></i>
+					<span>Profil</span>
+				</a>
+				<a href="#">
+					<i class="ph-file-light"></i>
+					<span>Contact</span>
+				</a>
+			</nav>
+			<footer class="footer">
+				<h1>POLY-QR</h1>
+				<div>
+					Polytech Marseille ©<br />
+					All Rights Reserved 2024
+				</div>
+			</footer>
+		</div>
+		<div class="app-body-main-content">
+			<section class="service-section">
+				<h2>Statistiques</h2>
+				<div class="service-section-header">
+					<div class="search-field">
+						<i class="ph-magnifying-glass"></i>
+						<input type="text" placeholder="Rechercher un évènement">
+					</div>
+					<div class="dropdown-field">
+						<select>
+							<option>Présence</option>
+							<option>Mon activité</option>
+						</select>
+						<i class="ph-caret-down"></i>
+					</div>
+					<button class="flat-button">
+						Valider
+					</button>
+				</div>
+				<div class="mobile-only">
+					<button class="flat-button">
+						Toggle search
+					</button>
+				</div>
+				<div class="tiles">
+					
+				</div>
+			</section>
+			<section class="event-section">
+				<div class="event-section-header">
+					<h2>Evènement passés</h2>
+				</div>
+				<div class="events">
+				
+				</div>
+			</section>
+		</div>
+		<div class="app-body-sidebar">
+			<section class="nextevent-section">
+				<h2>Prochaines rencontres</h2>
+			</section>
+		</div>
+	</div>
+</div>
+<!-- partial -->
+  <script src='https://unpkg.com/phosphor-icons'></script>
+  <script  src="./script.js"></script>
+
+</body>
+</html>
