@@ -27,7 +27,7 @@ body {
   padding-top: 3vw;
   padding-bottom: 3vw;
   justify-content: center;
-  background: url(backgroundlogin.png);
+  background: url(/backgroundlogin);
 }
 
 *,
@@ -846,7 +846,7 @@ a {
   width: 100%;
   margin: auto;
   max-width: 525px;
-  min-height: 650px;
+  min-height: 770px;
   position: relative;
   background-color: #1F1F1F;
   box-shadow: 0 12px 15px 0 rgba(0, 0, 0, 0.40),
@@ -911,6 +911,11 @@ a {
   color: #fff;
   display: block;
 }
+
+.login-form .group .input{
+  color: #000000;
+}
+
 .login-form .group .input,
 .login-form .group .button {
   border: none;
@@ -995,7 +1000,7 @@ a {
 }
 
 .login{
-  background: url(backgroundlogin.png) no-repeat;
+  background: url(/backgroundlogin) no-repeat;
 }
 
 .accueil {

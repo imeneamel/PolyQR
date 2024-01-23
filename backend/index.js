@@ -65,7 +65,7 @@ app.post('/login', (req, res) => {
 
 
 
-
+// Pages
 
 app.get('/dashboard-professeur', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'dashboardprof.html'));
@@ -77,6 +77,25 @@ app.get('/dashboard-etudiant', (req, res) => {
 
 app.get('/accueil', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'accueil.html'));
+});
+
+app.get('/login', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'login.html'));
+});
+
+
+// Style et images 
+
+app.get('/style', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'style.css'));
+});
+
+app.get('/logo', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'logo.png'));
+});
+
+app.get('/backgroundlogin', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'backgroundlogin.png'));
 });
 
 
