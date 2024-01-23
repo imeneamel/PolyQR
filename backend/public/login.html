@@ -13,14 +13,15 @@
 			  <input id="tab-2" type="radio" name="tab" class="sign-up"><label for="tab-2" class="tab">Sign Up</label>
 			  <div class="login-form">
 				<div class="sign-in-htm">
+					<form action="/signin" method="post">
 				  <div class="group">
 					<br>
-					<label for="user" class="label">Username</label>
-					<input id="user" type="text" class="input">
+					<label for="mail" class="label">Adresse mail</label>
+					<input id="mail" type="text" class="input" name="mail">
 				  </div>
 				  <div class="group">
-					<label for="pass" class="label">Password</label>
-					<input id="pass" type="password" class="input" data-type="password">
+					<label for="pass" class="label">Mot de passe</label>
+					<input id="pass" type="password" class="input" data-type="password" name="pass">
 				  </div>
 				  <div class="group">
 					<input id="check" type="checkbox" class="check" checked>
@@ -29,41 +30,44 @@
 				  <div class="group">
 					<input type="submit" class="button" value="Sign In">
 				  </div>
+				</form>
 				  <div class="hr"></div>
 				</div>
 				<div class="sign-up-htm">
+					<form action="/signup" method="post">
 				  <div class="group">
 					<br>
-					<label for="user" class="label">Username</label>
-					<input id="user" type="text" class="input">
+					<label for="username" class="label">Nom</label>
+					<input id="username" type="text" class="input" name="username">
 				  </div>
 				  <div class="group">
-					<label for="pass" class="label">Password</label>
-					<input id="pass" type="password" class="input" data-type="password">
+					<label for="pass" class="label">Mot de passe</label>
+					<input id="pass" type="password" class="input" data-type="password" name="pass">
 				  </div>
 				  <div class="group">
-					<label for="pass" class="label">Repeat Password</label>
-					<input id="pass" type="password" class="input" data-type="password">
+					<label for="pass" class="label">Répéter votre mot de passe</label>
+					<input id="pass" type="password" class="input" data-type="password" name="passconf">
 				  </div>
 				  <div class="group">
-					<label for="pass" class="label">Email Address</label>
-					<input id="pass" type="text" class="input">
+					<label for="mail" class="label">Adresse mail</label>
+					<input id="mail" type="text" class="input" name="mail">
 				  </div>
 				  <div class="group">
 					<label for="status" class="label">Status</label>
-					<select id="status" class="input">
+					<select id="status" class="input" name="status">
 						<option value="professeur">Professeur</option>
 						<option value="etudiant">Étudiant</option>
 						<option value="externe">Externe</option>
 					</select>
 				</div>
 				  <div class="group" id="event-id-group" style="display: none;">
-					<label for="event-id" class="label">ID d'événement externe</label>
-					<input id="event-id" type="text" class="input">
+					<label for="event-id" class="label">ID d'événement</label>
+					<input id="event-id" type="text" class="input" name="eventId">
 				</div>
 				<div class="group">
 					<input type="submit" class="button" value="Sign Up">
 				</div>
+				</form>
 				<div class="hr"></div>
 			</div>
 		</div>

@@ -1,10 +1,14 @@
 const express = require('express');
 const path = require('path');
+const bodyParser = require('body-parser');
 const mysql = require('mysql2');
-const bcrypt = require('bcrypt'); // Ajoutez cette ligne
+const bcrypt = require('bcrypt');
 
 const app = express();
 const port = 3000;
+
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
 
 // Configuration de la base de données
 const db = mysql.createConnection({
@@ -16,7 +20,7 @@ const db = mysql.createConnection({
 
 // ...
 
-app.post('/login', (req, res) => {
+app.post('/signin', (req, res) => {
     const { username, password, role } = req.body;
 
     // Vérifier le rôle et exécuter la requête SQL appropriée
@@ -63,6 +67,42 @@ app.post('/login', (req, res) => {
     });
 });
 
+
+// Inscription
+app.post('/signup', async (req, res) => {
+    const { username, pass, mail, status, eventId } = req.body;
+
+    // Vérifier si l'utilisateur existe déjà
+    const userExistsQuery = (status === 'professeur') ? 'SELECT * FROM professor WHERE username = ?' : 'SELECT * FROM student WHERE username = ?';
+    
+    db.query(userExistsQuery, [username], async (userErr, userResults) => {
+        if (userErr) {
+            console.error('Erreur lors de la vérification de l\'existence de l\'utilisateur :', userErr);
+            res.status(500).json({ error: 'Erreur serveur' });
+        } else {
+            if (userResults.length > 0) {
+                res.status(409).json({ error: 'Nom d\'utilisateur déjà utilisé' });
+            } else {
+                // Hacher le mot de passe
+                const hashedPassword = await bcrypt.hash(pass, 10);
+
+                // Insérer l'utilisateur dans la base de données
+                const insertUserQuery = (status === 'professeur') ? 'INSERT INTO professor (username, password_hash, name, email) VALUES (?, ?, ?, ?)' : 'INSERT INTO student (username, password_hash, name, email) VALUES (?, ?, ?, ?)';
+
+                db.query(insertUserQuery, [username, hashedPassword, username, mail], (insertErr) => {
+                    if (insertErr) {
+                        console.error('Erreur lors de l\'inscription :', insertErr);
+                        res.status(500).json({ error: 'Erreur serveur' });
+                    } else {
+                        // Rediriger vers le tableau de bord approprié
+                        const dashboardRoute = (status === 'professeur') ? '/dashboard-professeur' : '/dashboard-etudiant';
+                        res.redirect(dashboardRoute);
+                    }
+                });
+            }
+        }
+    });
+});
 
 
 // Pages
