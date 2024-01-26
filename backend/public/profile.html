@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>PolyQR</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/meyer-reset/2.0/reset.min.css">
+  <link rel="stylesheet" href="/style">
+</head>
+<body>
+<div class="app">
+    <header class="app-header">
+        <div class="app-header-logo">
+            <div class="logo">
+                <span class="logo-icon">
+                    <img class='logopoly' src="/logo" />
+                </span>
+                <h1 class="logo-title">
+                    <span>PolyQR - Dashboard</span>
+                    <span></span>
+                </h1>
+            </div>
+        </div>
+    </header>
+    <div class="app-body">
+        <div class="app-body-navigation">
+            <nav class="navigation">
+                <a href="#">
+                    <i class="ph-browsers"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="/events">
+                    <i class="ph-check-square"></i>
+                    <span>Evènements</span>
+                </a>
+                <a href="/profil">
+                    <i class="ph-gear"></i>
+                    <span>Profil</span>
+                </a>
+                <a href="#">
+                    <i class="ph-file-light"></i>
+                    <span>Contact</span>
+                </a>
+            </nav>
+            <footer class="footer">
+                <h1>POLY-QR</h1>
+                <div>
+                    Polytech Marseille ©<br />
+                    All Rights Reserved 2024
+                </div>
+            </footer>
+        </div>
+        <div class="app-body-main-content">
+            <section class="service-section">
+                <h2>Mon Profil</h2>
+                <br>
+                <h1>Mes Informations</h1>
+                <div class="service-section-header">
+					<div class="profile-form" id="profile-form">
+                    <form action="/modification" method="post" id="eventForm">
+                        <div class="group">
+                          <br>
+                          <label for="username" class="label">Nom</label>
+                          <input id="username" type="text" class="input" name="username">
+                        </div>
+						<div class="group">
+							<label for="mail" class="label">Adresse mail</label>
+							<input id="mail" type="mail" class="input" name="mail" required>
+						</div>
+						
+						<div class="group">
+							<label for="pass" class="label">Mot de passe</label>
+							<input id="pass" type="password" class="input" name="pass" required>
+						</div>
+                        <div class="group">
+							<label for="pass" class="label">Confirmation du mot de passe</label>
+							<input id="pass" type="password" class="input" name="pass" required>
+						</div>
+                        <br>
+                        <div class="group">
+                          <input type="submit" class="button" value="Modifier mes informations">
+                        </div>
+					</div>
+                    </form>
+                </div>
+            </section>
+        </div>
+        <section>
+            <img src="/logo"></img>
+        </section>
+    </div>
+</div>
+
+<script src='https://unpkg.com/phosphor-icons'></script>
+<script src="./script.js"></script>
+<script>
+    function toggleLocationInput() {
+        
+    }
+</script>
+</body>
+</html>

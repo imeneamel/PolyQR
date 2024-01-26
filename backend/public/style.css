@@ -1227,3 +1227,101 @@ a {
   }
 }
 
+#profile-form {
+  min-height: 345px;
+  position: relative;
+  perspective: 1000px;
+  transform-style: preserve-3d;
+}
+
+#profile-form .group {
+  margin-bottom: 15px;
+}
+
+#profile-form .group .label,
+#profile-form .group .input,
+#profile-form .group .button {
+  width: 150%;
+  color: #fff;
+  display: block;
+}
+
+#profile-form .group .input {
+  color: #000000;
+}
+
+#profile-form .group .input,
+#profile-form .group .button {
+  border: none;
+  padding: 15px 20px;
+  border-radius: 25px;
+  background-color: #fff;
+}
+
+#profile-form .group input[data-type="password"] {
+  -webkit-text-security: circle;
+}
+
+#profile-form .group .label {
+  color: #aaa;
+  font-size: 12px;
+}
+
+#profile-form .group .button {
+  background: #1161ee;
+  cursor: pointer;
+}
+
+#profile-form .group .button:hover {
+  background: #1454c4;
+  cursor: pointer;
+}
+
+#profile-form .group label .icon {
+  width: 15px;
+  height: 15px;
+  border-radius: 2px;
+  position: relative;
+  display: inline-block;
+  background: rgba(255, 255, 255, 0.5);
+}
+
+#profile-form .group label .icon:before,
+#profile-form .group label .icon:after {
+  content: "";
+  width: 10px;
+  height: 2px;
+  background: #fff;
+  position: absolute;
+  transition: all 0.2s ease-in-out 0s;
+}
+
+#profile-form .group label .icon:before {
+  left: 3px;
+  width: 5px;
+  bottom: 6px;
+  transform: scale(0) rotate(0);
+}
+
+#profile-form .group label .icon:after {
+  top: 6px;
+  right: 0;
+  transform: scale(0) rotate(0);
+}
+
+#profile-form .group .check:checked + label {
+  color: #fff;
+}
+
+#profile-form .group .check:checked + label .icon {
+  background: #1161ee;
+}
+
+#profile-form .group .check:checked + label .icon:before {
+  transform: scale(1) rotate(45deg);
+}
+
+#profile-form .group .check:checked + label .icon:after {
+  transform: scale(1) rotate(-45deg);
+}
+
