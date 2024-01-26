@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>PolyQR</title>
+  <title>PolyQR - Profil</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/meyer-reset/2.0/reset.min.css">
   <link rel="stylesheet" href="/style">
 </head>
@@ -15,7 +15,7 @@
                     <img class='logopoly' src="/logo" />
                 </span>
                 <h1 class="logo-title">
-                    <span>PolyQR - Dashboard</span>
+                    <span>PolyQR</span>
                     <span></span>
                 </h1>
             </div>
@@ -24,15 +24,15 @@
     <div class="app-body">
         <div class="app-body-navigation">
             <nav class="navigation">
-                <a href="#">
+                <a id="dashboardLink" href="#">
                     <i class="ph-browsers"></i>
                     <span>Dashboard</span>
                 </a>
-                <a href="/events">
+                <a id="eventsLink" href="#">
                     <i class="ph-check-square"></i>
                     <span>Evènements</span>
                 </a>
-                <a href="/profil">
+                <a id="profilLink" href="#">
                     <i class="ph-gear"></i>
                     <span>Profil</span>
                 </a>
@@ -93,9 +93,30 @@
 <script src='https://unpkg.com/phosphor-icons'></script>
 <script src="./script.js"></script>
 <script>
-    function toggleLocationInput() {
-        
-    }
+    document.addEventListener('DOMContentLoaded', function () {
+        // Récupérer l'URL actuelle
+        var currentUrl = window.location.href;
+
+        // Extraire l'ID de l'URL en utilisant une expression régulière
+        var match = currentUrl.match(/\/profil\/(\d+)/);
+
+        // Vérifier si la correspondance a été trouvée
+        if (match && match[1]) {
+            var userId = match[1];
+
+            // Mettre à jour les liens avec l'ID récupéré
+            var dashboardLink = document.getElementById('dashboardLink');
+            var eventsLink = document.getElementById('eventsLink');
+            var profilLink = document.getElementById('profilLink');
+
+            // Vérifier si les liens ont été trouvés
+            if (dashboardLink && eventsLink && profilLink) {
+                dashboardLink.href = "/dashboard-professeur/" + userId;
+                eventsLink.href = "/events/" + userId;
+                profilLink.href = "/profile/" + userId;
+            }
+        }
+    });
 </script>
 </body>
 </html>

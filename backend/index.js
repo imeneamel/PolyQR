@@ -124,7 +124,8 @@ app.post('/signup', async (req, res) => {
 
 app.post('/modification', async (req, res) => {
     const { username, pass, mail, status, eventId } = req.body;
-    const user_id = result.insertId;
+    const user_id = req.body.user_id;  // Assurez-vous de récupérer correctement l'identifiant de l'utilisateur
+
     // Vérifier si l'utilisateur existe 
     const userExistsQuery = (status === 'professeur') ? 'SELECT * FROM professor WHERE username = ?' : 'SELECT * FROM student WHERE username = ?';
 
@@ -133,24 +134,26 @@ app.post('/modification', async (req, res) => {
             console.error('Erreur lors de la vérification de l\'existence de l\'utilisateur :', userErr);
             res.status(500).json({ error: 'Erreur serveur' });
         } else {
-                // Hacher le mot de passe
-                const hashedPassword = await bcrypt.hash(pass, 10);
+            // Hacher le mot de passe
+            const hashedPassword = await bcrypt.hash(pass, 10);
 
-                // Modifier l'utilisateur dans la base de données
-                const insertUserQuery = (status === 'professeur') ? 'UPDATE professor WHERE user_id == user_id SET (username, password_hash, name, email) VALUES (?, ?, ?, ?)' : 'UPDATE professor WHERE user_id == user_id SET (username, password_hash, name, email) VALUES (?, ?, ?, ?)';
-                db.query(insertUserQuery, [username, hashedPassword, username, mail], (insertErr, result) => {
-                    if (insertErr) {
-                        console.error('Erreur lors de la modification des informations :', insertErr);
-                        res.status(500).json({ error: 'Erreur serveur' });
-                    } else {
-                        // Rediriger vers le tableau de bord approprié avec l'identifiant unique
-                        const dashboardRoute = (status === 'professeur') ? `/dashboard-professeur/${user_id}` : `/dashboard-etudiant/${user_id}`;
-                        res.redirect(dashboardRoute);
-                    }
-                });
-            }
-        });
+            // Modifier l'utilisateur dans la base de données
+            const insertUserQuery = (status === 'professeur') ? 'UPDATE professor SET username = ?, password_hash = ?, name = ?, email = ? WHERE user_id = ?' : 'UPDATE student SET username = ?, password_hash = ?, name = ?, email = ? WHERE user_id = ?';
+            
+            db.query(insertUserQuery, [username, hashedPassword, username, mail, user_id], (insertErr, result) => {
+                if (insertErr) {
+                    console.error('Erreur lors de la modification des informations :', insertErr);
+                    res.status(500).json({ error: 'Erreur serveur' });
+                } else {
+                    // Rediriger vers le tableau de bord approprié avec l'identifiant unique
+                    const dashboardRoute = (status === 'professeur') ? `/dashboard-professeur/${user_id}` : `/dashboard-etudiant/${user_id}`;
+                    res.redirect(dashboardRoute);
+                }
+            });
+        }
     });
+});
+
 
 
 // Pages
@@ -226,13 +229,66 @@ app.get('/login', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'login.html'));
 });
 
-app.get('/events', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'events.html'));
+app.get('/profile/:id', (req, res) => {
+    const userId = req.params.id;
+    // Récupérer les données spécifiques à l'utilisateur dans la base de données
+    const getUserDataQuery = 'SELECT * FROM professor WHERE user_id = ? UNION SELECT * FROM student WHERE user_id = ?';
+    db.query(getUserDataQuery, [userId, userId], (err, results) => {
+        if (err) {
+            console.error('Erreur lors de la récupération des données utilisateur :', err);
+            res.status(500).send('Erreur serveur');
+        } else {
+            // Vérifier si des résultats ont été renvoyés
+            if (results.length > 0) {
+                const userData = results[0];
+
+                // Vérifier l'authenticité de l'utilisateur (ajuster cette logique selon vos besoins)
+                const userIsAuthorized = true;
+
+                if (userIsAuthorized) {
+                    // Envoyer la page du tableau de bord avec les données spécifiques à l'utilisateur
+                    res.sendFile(path.join(__dirname, 'public', 'profile.html'));
+                } else {
+                    res.status(403).send('Accès non autorisé');
+                }
+            } else {
+                // Aucun utilisateur trouvé avec cet ID
+                res.status(404).send('Utilisateur non trouvé');
+            }
+        }
+    });
 });
 
-app.get('/profil', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'profile.html'));
+app.get('/events/:id', (req, res) => {
+    const userId = req.params.id;
+    // Récupérer les données spécifiques à l'utilisateur dans la base de données
+    const getUserDataQuery = 'SELECT * FROM professor WHERE user_id = ? UNION SELECT * FROM student WHERE user_id = ?';
+    db.query(getUserDataQuery, [userId, userId], (err, results) => {
+        if (err) {
+            console.error('Erreur lors de la récupération des données utilisateur :', err);
+            res.status(500).send('Erreur serveur');
+        } else {
+            // Vérifier si des résultats ont été renvoyés
+            if (results.length > 0) {
+                const userData = results[0];
+
+                // Vérifier l'authenticité de l'utilisateur (ajuster cette logique selon vos besoins)
+                const userIsAuthorized = true;
+
+                if (userIsAuthorized) {
+                    // Envoyer la page du tableau de bord avec les données spécifiques à l'utilisateur
+                    res.sendFile(path.join(__dirname, 'public', 'events.html'));
+                } else {
+                    res.status(403).send('Accès non autorisé');
+                }
+            } else {
+                // Aucun utilisateur trouvé avec cet ID
+                res.status(404).send('Utilisateur non trouvé');
+            }
+        }
+    });
 });
+
 
 // Style et images 
 

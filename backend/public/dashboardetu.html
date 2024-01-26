@@ -26,18 +26,18 @@
 	<div class="app-body">
 		<div class="app-body-navigation">
 			<nav class="navigation">
-				<a href="#">
-					<i class="ph-browsers"></i>
-					<span>Dashboard</span>
-				</a>
-				<a href="/events">
-					<i class="ph-check-square"></i>
-					<span>Evènements</span>
-				</a>
-				<a href="/profil">
-					<i class="ph-gear"></i>
-					<span>Profil</span>
-				</a>
+				<a id="dashboardLink" href="#">
+                    <i class="ph-browsers"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a id="eventsLink" href="#">
+                    <i class="ph-check-square"></i>
+                    <span>Evènements</span>
+                </a>
+                <a id="profilLink" href="#">
+                    <i class="ph-gear"></i>
+                    <span>Profil</span>
+                </a>
 				<a href="#">
 					<i class="ph-file-light"></i>
 					<span>Contact</span>
@@ -97,7 +97,32 @@
 </div>
 <!-- partial -->
   <script src='https://unpkg.com/phosphor-icons'></script>
-  <script  src="./script.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Récupérer l'URL actuelle
+        var currentUrl = window.location.href;
+
+        // Extraire l'ID de l'URL en utilisant une expression régulière
+        var match = currentUrl.match(/\/dashboard-etudiant\/(\d+)/);
+
+        // Vérifier si la correspondance a été trouvée
+        if (match && match[1]) {
+            var userId = match[1];
+
+            // Mettre à jour les liens avec l'ID récupéré
+            var dashboardLink = document.getElementById('dashboardLink');
+            var eventsLink = document.getElementById('eventsLink');
+            var profilLink = document.getElementById('profilLink');
+
+            // Vérifier si les liens ont été trouvés
+            if (dashboardLink && eventsLink && profilLink) {
+                dashboardLink.href = "/dashboard-professeur/" + userId;
+                eventsLink.href = "/events/" + userId;
+                profilLink.href = "/profile/" + userId;
+            }
+        }
+    });
+</script>
 
 </body>
 </html>
