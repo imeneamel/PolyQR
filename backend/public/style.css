@@ -1038,3 +1038,192 @@ a {
 .start-button:hover {
   background-color: #2980b9;
 }
+
+
+/* Ajout des règles de style pour event-form */
+.event-form {
+  min-height: 345px;
+  position: relative;
+  perspective: 1000px;
+  transform-style: preserve-3d;
+}
+
+.event-form .group {
+  margin-bottom: 15px;
+}
+
+.event-form .group .label,
+.event-form .group .input,
+.event-form .group .button {
+  width: 150%;
+  color: #fff;
+  display: block;
+}
+
+.event-form .group .input {
+  color: #000000;
+}
+
+.event-form .group .input,
+.event-form .group .button {
+  border: none;
+  padding: 15px 20px;
+  border-radius: 25px;
+  background-color: #fff;
+}
+
+.event-form .group input[data-type="password"] {
+  -webkit-text-security: circle;
+}
+
+.event-form .group .label {
+  color: #aaa;
+  font-size: 12px;
+}
+
+.event-form .group .button {
+  background: #1161ee;
+  cursor: pointer;
+}
+
+.event-form .group .button:hover {
+  background: #1454c4;
+  cursor: pointer;
+}
+
+.event-form .group label .icon {
+  width: 15px;
+  height: 15px;
+  border-radius: 2px;
+  position: relative;
+  display: inline-block;
+  background: rgba(255, 255, 255, 0.5);
+}
+
+.event-form .group label .icon:before,
+.event-form .group label .icon:after {
+  content: "";
+  width: 10px;
+  height: 2px;
+  background: #fff;
+  position: absolute;
+  transition: all 0.2s ease-in-out 0s;
+}
+
+.event-form .group label .icon:before {
+  left: 3px;
+  width: 5px;
+  bottom: 6px;
+  transform: scale(0) rotate(0);
+}
+
+.event-form .group label .icon:after {
+  top: 6px;
+  right: 0;
+  transform: scale(0) rotate(0);
+}
+
+.event-form .group .check:checked + label {
+  color: #fff;
+}
+
+.event-form .group .check:checked + label .icon {
+  background: #1161ee;
+}
+
+.event-form .group .check:checked + label .icon:before {
+  transform: scale(1) rotate(45deg);
+}
+
+.event-form .group .check:checked + label .icon:after {
+  transform: scale(1) rotate(-45deg);
+}
+
+.event-html .sign-in:checked + .tab + .sign-up + .tab + .event-form .sign-in-htm {
+  transform: rotate(0);
+}
+
+.event-html .sign-up:checked + .tab + .event-form .sign-up-htm {
+  transform: rotate(0);
+}
+
+
+
+@media screen and (max-width: 1200px) {
+  .app-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid var(--c-gray-600);
+  }
+
+  .app-header-navigation,
+  .app-header-actions {
+    display: none;
+  }
+
+  .app-body {
+    grid-template-columns: 1fr;
+  }
+
+  .app-body > * {
+    margin-bottom: 3.5rem;
+  }
+
+  .app-body-navigation {
+    display: none;
+  }
+}
+
+@media screen and (max-width: 1000px) {
+  .service-section-header {
+    display: none;
+  }
+
+  .service-section-footer {
+    margin-top: 1rem;
+  }
+
+  .event-section-header,
+  .nextevent-section-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .filter-options {
+    margin-left: 0;
+    padding-left: 0;
+    border-left: none;
+    margin-top: 1rem;
+  }
+
+  .event-details {
+    flex-direction: column;
+    margin-left: 0;
+    margin-top: 1rem;
+  }
+
+  .event-details div {
+    width: 100%;
+    margin-left: 0;
+    margin-top: 1rem;
+  }
+
+  .event-number {
+    margin-left: 0;
+    margin-top: 1.25rem;
+    width: 100%;
+    justify-content: flex-start;
+  }
+
+  .faq p {
+    display: none;
+  }
+
+  .faq div {
+    margin-top: 1rem;
+  }
+}
+

@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>PolyQR</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/meyer-reset/2.0/reset.min.css">
+  <link rel="stylesheet" href="/style">
+</head>
+<body>
+<div class="app">
+    <header class="app-header">
+        <div class="app-header-logo">
+            <div class="logo">
+                <span class="logo-icon">
+                    <img class='logopoly' src="/logo" />
+                </span>
+                <h1 class="logo-title">
+                    <span>PolyQR - Dashboard</span>
+                    <span></span>
+                </h1>
+            </div>
+        </div>
+    </header>
+    <div class="app-body">
+        <div class="app-body-navigation">
+            <nav class="navigation">
+                <a href="#">
+                    <i class="ph-browsers"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="/events">
+                    <i class="ph-check-square"></i>
+                    <span>Evènements</span>
+                </a>
+                <a href="#">
+                    <i class="ph-gear"></i>
+                    <span>Profil</span>
+                </a>
+                <a href="#">
+                    <i class="ph-file-light"></i>
+                    <span>Contact</span>
+                </a>
+            </nav>
+            <footer class="footer">
+                <h1>POLY-QR</h1>
+                <div>
+                    Polytech Marseille ©<br />
+                    All Rights Reserved 2024
+                </div>
+            </footer>
+        </div>
+        <div class="app-body-main-content">
+            <section class="service-section">
+                <h2>Organiser un évènement</h2>
+                <div class="service-section-header">
+					<div class="event-form">
+                    <form action="/organize" method="post" id="eventForm">
+                        <div class="group">
+                          <br>
+                          <label for="title" class="label">Nom de l'évènement</label>
+                          <input id="title" type="text" class="input" name="title">
+                        </div>
+						<div class="group">
+							<label for="date" class="label">Date de l'évènement</label>
+							<input id="date" type="date" class="input" name="date" required>
+						</div>
+						
+						<div class="group">
+							<label for="time" class="label">Heure de l'évènement</label>
+							<input id="time" type="time" class="input" name="time" required>
+						</div>
+                        <div class="group">
+                          <label for="description" class="label">Description de l'évènement</label>
+                          <input id="description" type="text" class="input" data-type="text" name="description">
+                        </div>
+                        <div class="group">
+                            <input id="check" type="checkbox" class="check" checked onclick="toggleLocationInput()">
+                            <label for="check"> Sélectionner une salle existante</label>
+                        </div>
+                        <div class="group" id="locationDropdownGroup">
+                            <label for="location" class="label">Choisir une salle existante</label>
+                            <!-- Dropdown des locations -->
+                            <select id="locationDropdown" class="input" name="location">
+                                <option value="salle1">Salle 1</option>
+                                <option value="salle2">Salle 2</option>
+                            </select>
+                        </div>
+                        <div class="group" id="locationInputGroup" style="display: none;">
+                            <label for="locationInput" class="label">Nouvelle salle</label>
+                            <!-- Input pour la nouvelle salle -->
+                            <input id="locationInput" type="text" class="input" data-type="text" name="locationInput">
+                        </div>
+                        <div class="group">
+                          <input type="submit" class="button" value="Créer l'évènement">
+                        </div>
+					</div>
+                    </form>
+                </div>
+            </section>
+        </div>
+        <div class="app-body-sidebar">
+            <section class="event-section">
+                <div class="event-section-header">
+                    <h2>Evènement passés</h2>
+                </div>
+            </section>
+        </div>
+    </div>
+</div>
+
+<script src='https://unpkg.com/phosphor-icons'></script>
+<script src="./script.js"></script>
+<script>
+    function toggleLocationInput() {
+        const locationDropdownGroup = document.getElementById('locationDropdownGroup');
+        const locationInputGroup = document.getElementById('locationInputGroup');
+
+        if (document.getElementById('check').checked) {
+            locationDropdownGroup.style.display = 'block';
+            locationInputGroup.style.display = 'none';
+        } else {
+            locationDropdownGroup.style.display = 'none';
+            locationInputGroup.style.display = 'block';
+        }
+    }
+</script>
+</body>
+</html>

@@ -196,6 +196,13 @@ app.get('/login', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'login.html'));
 });
 
+app.get('/events', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'events.html'));
+});
+
+app.get('/profile', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'profile.html'));
+});
 
 // Style et images 
 
