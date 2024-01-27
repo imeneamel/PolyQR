@@ -57,6 +57,7 @@
                 <div class="service-section-header">
 					<div class="profile-form" id="profile-form">
                     <form action="/modification" method="post" id="eventForm">
+                        <input type="hidden" name="user_id" id="user_id"/>
                         <div class="group">
                           <br>
                           <label for="username" class="label">Nom</label>
@@ -66,15 +67,14 @@
 							<label for="mail" class="label">Adresse mail</label>
 							<input id="mail" type="mail" class="input" name="mail" required>
 						</div>
-						
 						<div class="group">
-							<label for="pass" class="label">Mot de passe</label>
-							<input id="pass" type="password" class="input" name="pass" required>
-						</div>
+                            <label for="pass" class="label">Mot de passe</label>
+                            <input id="pass" type="password" class="input" name="pass" required>
+                        </div>
                         <div class="group">
-							<label for="pass" class="label">Confirmation du mot de passe</label>
-							<input id="pass" type="password" class="input" name="pass" required>
-						</div>
+                            <label for="confirmPass" class="label">Confirmation du mot de passe</label>
+                            <input id="confirmPass" type="password" class="input" name="confirmPass" required>
+                        </div>
                         <br>
                         <div class="group">
                           <input type="submit" class="button" value="Modifier mes informations">
@@ -94,29 +94,43 @@
 <script src="./script.js"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function () {
-        // Récupérer l'URL actuelle
-        var currentUrl = window.location.href;
 
-        // Extraire l'ID de l'URL en utilisant une expression régulière
-        var match = currentUrl.match(/\/profil\/(\d+)/);
+    // Récupérer les paramètres d'URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const usernameParam = urlParams.get('username');
+    const emailParam = urlParams.get('email');
 
-        // Vérifier si la correspondance a été trouvée
-        if (match && match[1]) {
-            var userId = match[1];
+    // Pré-remplir les champs du formulaire si les paramètres existent
+    if (usernameParam !== null) {
+        document.getElementById('username').value = usernameParam;
+    }
 
-            // Mettre à jour les liens avec l'ID récupéré
-            var dashboardLink = document.getElementById('dashboardLink');
-            var eventsLink = document.getElementById('eventsLink');
-            var profilLink = document.getElementById('profilLink');
+    if (emailParam !== null) {
+        document.getElementById('mail').value = emailParam;
+    }
+    
+    var currentUrl = window.location.href;
+    var match = currentUrl.match(/\/profile\/(\d+)/);
 
-            // Vérifier si les liens ont été trouvés
-            if (dashboardLink && eventsLink && profilLink) {
-                dashboardLink.href = "/dashboard-professeur/" + userId;
-                eventsLink.href = "/events/" + userId;
-                profilLink.href = "/profile/" + userId;
-            }
+    if (match && match[1]) {
+        var userId = match[1];
+        var userIdInput = document.getElementById('user_id');
+        userIdInput.value = userId;
+
+        // Mettre à jour les liens avec l'ID récupéré
+        var dashboardLink = document.getElementById('dashboardLink');
+        var eventsLink = document.getElementById('eventsLink');
+        var profilLink = document.getElementById('profilLink');
+
+        // Vérifier si les liens ont été trouvés
+        if (dashboardLink && eventsLink && profilLink) {
+            dashboardLink.href = "/dashboard-professeur/" + userId;
+            eventsLink.href = "/events/" + userId;
+            profilLink.href = "/profile/" + userId;
         }
-    });
+    }
+});
+
 </script>
 </body>
 </html>

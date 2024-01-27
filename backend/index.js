@@ -103,7 +103,7 @@ app.post('/signup', async (req, res) => {
 
                 // Insérer l'utilisateur dans la base de données
                 const insertUserQuery = (status === 'professeur') ? 'INSERT INTO professor (username, password_hash, name, email) VALUES (?, ?, ?, ?)' : 'INSERT INTO student (username, password_hash, name, email) VALUES (?, ?, ?, ?)';
-
+                console.log('requete : ', insertUserQuery);
                 db.query(insertUserQuery, [username, hashedPassword, username, mail], (insertErr, result) => {
                     if (insertErr) {
                         console.error('Erreur lors de l\'inscription :', insertErr);
@@ -122,37 +122,98 @@ app.post('/signup', async (req, res) => {
     });
 });
 
+
 app.post('/modification', async (req, res) => {
-    const { username, pass, mail, status, eventId } = req.body;
-    const user_id = req.body.user_id;  // Assurez-vous de récupérer correctement l'identifiant de l'utilisateur
+    const { username, pass, confirmPass, mail } = req.body;
+    console.log('Données reçues du formulaire :', req.body);
 
-    // Vérifier si l'utilisateur existe 
-    const userExistsQuery = (status === 'professeur') ? 'SELECT * FROM professor WHERE username = ?' : 'SELECT * FROM student WHERE username = ?';
+    // Récupérer l'ID de l'utilisateur depuis la route
+    var currentUrl = req.get('Referer');
+    var match = currentUrl.match(/\/profile\/(\d+)/);
 
-    db.query(userExistsQuery, [username], async (userErr, userResults) => {
-        if (userErr) {
-            console.error('Erreur lors de la vérification de l\'existence de l\'utilisateur :', userErr);
-            res.status(500).json({ error: 'Erreur serveur' });
+    // Vérifier si la correspondance a été trouvée
+    if (!match || !match[1]) {
+        return res.status(400).json({ error: 'ID utilisateur non trouvé dans l\'URL' });
+    }
+
+    var userId = match[1];
+    var status; // Déclarer la variable status à l'extérieur de la condition
+
+    // Récupérer les informations mises à jour de l'utilisateur
+    const updatedUserQuery = 'SELECT * FROM professor WHERE user_id = ?';
+    const [updatedUserResults] = await db.promise().query(updatedUserQuery, [userId]);
+
+    // Vérifier si des résultats ont été obtenus
+    if (updatedUserResults && updatedUserResults.length > 0) {
+        // L'utilisateur a été trouvé dans la table professor
+        status = 'professeur';
+    } else {
+        // L'utilisateur n'a pas été trouvé dans la table professor, vérifier dans la table student
+        const studentUserQuery = 'SELECT * FROM student WHERE user_id = ?';
+        const [studentUserResults] = await db.promise().query(studentUserQuery, [userId]);
+
+        if (studentUserResults && studentUserResults.length > 0) {
+            // L'utilisateur a été trouvé dans la table student
+            status = 'étudiant';
         } else {
-            // Hacher le mot de passe
-            const hashedPassword = await bcrypt.hash(pass, 10);
-
-            // Modifier l'utilisateur dans la base de données
-            const insertUserQuery = (status === 'professeur') ? 'UPDATE professor SET username = ?, password_hash = ?, name = ?, email = ? WHERE user_id = ?' : 'UPDATE student SET username = ?, password_hash = ?, name = ?, email = ? WHERE user_id = ?';
-            
-            db.query(insertUserQuery, [username, hashedPassword, username, mail, user_id], (insertErr, result) => {
-                if (insertErr) {
-                    console.error('Erreur lors de la modification des informations :', insertErr);
-                    res.status(500).json({ error: 'Erreur serveur' });
-                } else {
-                    // Rediriger vers le tableau de bord approprié avec l'identifiant unique
-                    const dashboardRoute = (status === 'professeur') ? `/dashboard-professeur/${user_id}` : `/dashboard-etudiant/${user_id}`;
-                    res.redirect(dashboardRoute);
-                }
-            });
+            // Aucun résultat trouvé dans les deux tables, gérer l'erreur
+            console.error('Aucune information mise à jour trouvée pour l\'utilisateur');
+            return res.status(404).json({ error: 'Aucune information mise à jour trouvée pour l\'utilisateur' });
         }
-    });
+    }
+
+    // Vérifier si les mots de passe correspondent
+    if (pass !== confirmPass) {
+        return res.status(400).json({ error: 'Les mots de passe ne correspondent pas' });
+    }
+
+    try {
+        console.log('ID utilisateur récupéré :', userId);
+
+        // Modifier l'utilisateur dans la base de données
+        const updateUserQuery = (status === 'professeur') ? 'UPDATE professor SET username = ?, email = ?, password_hash = ? WHERE user_id = ?' : 'UPDATE student SET username = ?, email = ?, password_hash = ? WHERE user_id = ?';
+
+        console.log('Requête SQL pour mettre à jour l\'utilisateur :', updateUserQuery);
+
+        const queryParams = [username, mail];
+
+        if (pass) {
+            const hashedPassword = await bcrypt.hash(pass, 10);
+            queryParams.push(hashedPassword);
+        }
+
+        queryParams.push(userId);
+
+        await db.promise().query(updateUserQuery, queryParams);
+
+        // Récupérer les informations mises à jour de l'utilisateur
+        const updatedUserQuery = (status === 'professeur') ? 'SELECT * FROM professor WHERE user_id = ?' : 'SELECT * FROM student WHERE user_id = ?';
+
+        const [updatedUserResults] = await db.promise().query(updatedUserQuery, [userId]);
+
+        // Vérifier si des résultats ont été obtenus
+        if (updatedUserResults && updatedUserResults.length > 0) {
+            // Rediriger vers le tableau de bord approprié avec l'identifiant unique
+            const dashboardRoute = (status === 'professeur') ? `/dashboard-professeur/${userId}` : `/dashboard-etudiant/${userId}`;
+
+            // Rediriger vers la page de profil avec les informations préremplies dans les champs
+            res.redirect(`/profile/${userId}?username=${updatedUserResults[0].username}&email=${updatedUserResults[0].email}`);
+        } else {
+            // Gérer le cas où aucun résultat n'a été trouvé
+            console.error('Aucune information mise à jour trouvée pour l\'utilisateur');
+            res.status(404).json({ error: 'Aucune information mise à jour trouvée pour l\'utilisateur' });
+        }
+
+    } catch (error) {
+        console.error('Erreur lors de la modification des informations :', error);
+        res.status(500).json({ error: 'Erreur serveur' });
+    }
 });
+
+
+
+
+
 
 
 
