@@ -1315,3 +1315,19 @@ a {
   transform: scale(1) rotate(-45deg);
 }
 
+#pastEventsTable {
+  width: 100%;
+  border-collapse: collapse; /* Pour fusionner les bordures des cellules */
+}
+
+#pastEventsTable th, #pastEventsTable td {
+  border: 1px solid #ddd; /* Bordure de 1 pixel solide de couleur grise */
+  padding: 8px; /* Espace à l'intérieur de chaque cellule */
+  text-align: left; /* Alignement du texte à gauche */
+}
+
+#pastEventsTable th {
+  background-color: #f2f2f2; /* Couleur de fond pour l'en-tête */
+  color: black;
+  text-shadow: #313131;
+}

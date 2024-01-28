@@ -211,6 +211,27 @@ app.post('/modification', async (req, res) => {
 });
 
 
+app.get('/api/past-events/:userId', (req, res) => {
+    const userId = req.params.userId;
+
+    // Requête SQL pour récupérer les cours et événements passés de l'utilisateur
+    const pastEventsQuery = `
+        SELECT title, description, eventdate AS date, start_time AS time FROM course
+        WHERE professor_id = ? AND (eventdate < CURRENT_DATE OR (eventdate = CURRENT_DATE AND end_time < CURRENT_TIME()))
+        UNION
+        SELECT title, description, eventdate AS date, start_time AS time FROM event
+        WHERE organizer_id = ? AND end_time < NOW();   
+    `;
+
+    db.query(pastEventsQuery, [userId, userId], (err, results) => {
+        if (err) {
+            console.error('Erreur lors de la récupération des cours et événements passés :', err);
+            res.status(500).json({ error: 'Erreur serveur' });
+        } else {
+            res.json(results);
+        }
+    });
+});
 
 
 

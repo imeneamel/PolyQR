@@ -82,7 +82,19 @@
 					<h2>Evènement passés</h2>
 				</div>
 				<div class="events">
-				
+					<table id="pastEventsTable">
+						<thead>
+							<tr>
+								<th>Titre</th>
+								<th>Description</th>
+								<th>Date</th>
+								<th>Heure</th>
+							</tr>
+						</thead>
+						<tbody>
+							<!-- Les données des cours passés seront ajoutées ici -->
+						</tbody>
+					</table>
 				</div>
 			</section>
 		</div>
@@ -103,22 +115,53 @@
         var match = currentUrl.match(/\/dashboard-professeur\/(\d+)/);
 
         // Vérifier si la correspondance a été trouvée
-        if (match && match[1]) {
-            var userId = match[1];
+    if (match && match[1]) {
+        var userId = match[1];
 
-            // Mettre à jour les liens avec l'ID récupéré
-            var dashboardLink = document.getElementById('dashboardLink');
-            var eventsLink = document.getElementById('eventsLink');
-            var profilLink = document.getElementById('profilLink');
+        // Mettre à jour les liens avec l'ID récupéré
+        var dashboardLink = document.getElementById('dashboardLink');
+        var eventsLink = document.getElementById('eventsLink');
+        var profilLink = document.getElementById('profilLink');
 
-            // Vérifier si les liens ont été trouvés
-            if (dashboardLink && eventsLink && profilLink) {
-                dashboardLink.href = "/dashboard-professeur/" + userId;
-                eventsLink.href = "/events/" + userId;
-                profilLink.href = "/profile/" + userId;
-            }
+        // Vérifier si les liens ont été trouvés
+        if (dashboardLink && eventsLink && profilLink) {
+            dashboardLink.href = "/dashboard-professeur/" + userId;
+            eventsLink.href = "/events/" + userId;
+            profilLink.href = "/profile/" + userId;
+
+            // Récupérer les cours et événements passés de la base de données
+			fetch(`/api/past-events/${userId}`)
+				.then(response => response.json())
+				.then(data => {
+					// Trier les données par date, de la plus récente à la plus ancienne
+					data.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+					// Remplir le tableau avec les données des cours et événements passés
+					const pastEventsTableBody = document.getElementById('pastEventsTable').getElementsByTagName('tbody')[0];
+
+					data.forEach(event => {
+						const row = pastEventsTableBody.insertRow();
+						const titleCell = row.insertCell(0);
+						const descriptionCell = row.insertCell(1);
+						const dateCell = row.insertCell(2);
+						const timeCell = row.insertCell(3);
+
+						titleCell.textContent = event.title;
+						descriptionCell.textContent = event.description;
+
+						// Formater la date (si elle est stockée sous forme de chaîne)
+						const formattedDate = new Date(event.date).toLocaleDateString();
+						dateCell.textContent = formattedDate;
+
+						// Formater l'heure (si elle est stockée sous forme de chaîne)
+						const formattedTime = new Date(event.time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+						timeCell.textContent = formattedTime;
+                    });
+                })
+                .catch(error => console.error('Erreur lors de la récupération des cours et événements passés :', error));
         }
-    });
+    }
+});
 </script>
 
 </body>
