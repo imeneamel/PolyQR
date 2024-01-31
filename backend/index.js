@@ -215,6 +215,7 @@ app.get('/api/past-events/:userId', (req, res) => {
     const userId = req.params.userId;
 
     // Requête SQL pour récupérer les cours et événements passés de l'utilisateur
+    // A vérifier pour les injections SQL
     const pastEventsQuery = `
         SELECT title, description, eventdate AS date, start_time AS time FROM course
         WHERE professor_id = ? AND (eventdate < CURRENT_DATE OR (eventdate = CURRENT_DATE AND end_time < CURRENT_TIME()))
@@ -309,6 +310,10 @@ app.get('/accueil', (req, res) => {
 
 app.get('/login', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'login.html'));
+});
+
+app.get('/presqr', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'presqr.html'));
 });
 
 app.get('/profile/:id', (req, res) => {
