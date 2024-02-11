@@ -1,3 +1,8 @@
+/**
+ * Module principal de l'application.
+ * @module app
+ */
+
 const express = require('express');
 const path = require('path');
 const bodyParser = require('body-parser');
@@ -7,6 +12,7 @@ const bcrypt = require('bcrypt');
 const app = express();
 const port = 3000;
 
+// Middleware pour parser les requêtes URL encodées et JSON
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
@@ -19,7 +25,14 @@ const db = mysql.createConnection({
 });
 
 
-// Connexion
+/**
+ * Fonction pour gérer la connexion des utilisateurs.
+ * @name Connexion
+ * @route {POST} /signin
+ * @param {string} email - L'adresse e-mail de l'utilisateur.
+ * @param {string} pass - Le mot de passe de l'utilisateur.
+ * @returns {Object} - Redirige vers le tableau de bord de l'utilisateur ou renvoie une erreur d'authentification.
+ */
 app.post('/signin', (req, res) => {
     const { email, pass } = req.body;
 
@@ -91,14 +104,26 @@ app.post('/signin', (req, res) => {
 });
 
 
-// Fonction pour extraire l'ID du cours à partir de l'URL de référence
+/**
+ * Fonction pour extraire l'ID du cours à partir de l'URL de référence.
+ * @name extractCourseIdFromURL
+ * @function
+ * @param {string} referer - L'URL de référence.
+ * @returns {string} - L'ID du cours extrait de l'URL.
+ */
 const extractCourseIdFromURL = (referer) => {
     const url = new URL(referer);
     const courseIdParam = url.searchParams.get('courseId');
     return courseIdParam;
 };
 
-// Fonction pour marquer l'élève comme présent dans la table de présence
+/**
+ * Fonction pour marquer l'élève comme présent dans la table de présence.
+ * @name markStudentPresent
+ * @function
+ * @param {string} studentId - L'ID de l'étudiant.
+ * @param {string} courseId - L'ID du cours.
+ */
 const markStudentPresent = (studentId, courseId) => {
     const insertQuery = 'INSERT INTO presence (student_id, course_id, is_present) VALUES (?, ?, ?)';
     const values = [studentId, courseId, true];
@@ -114,7 +139,17 @@ const markStudentPresent = (studentId, courseId) => {
 
 
 
-// Inscription
+/**
+ * Fonction pour gérer l'inscription des utilisateurs.
+ * @name Inscription
+ * @route {POST} /signup
+ * @param {string} username - Le nom d'utilisateur.
+ * @param {string} pass - Le mot de passe.
+ * @param {string} mail - L'adresse e-mail.
+ * @param {string} status - Le statut de l'utilisateur (professeur ou étudiant).
+ * @param {string} eventId - L'ID de l'événement.
+ * @returns {Object} - Redirige vers le tableau de bord de l'utilisateur nouvellement inscrit ou renvoie une erreur.
+ */
 app.post('/signup', async (req, res) => {
     const { username, pass, mail, status, eventId } = req.body;
 
@@ -153,7 +188,11 @@ app.post('/signup', async (req, res) => {
     });
 });
 
-
+/**
+ * Endpoint pour la modification des informations utilisateur.
+ * @param {Object} req - Requête HTTP (Express).
+ * @param {Object} res - Réponse HTTP (Express).
+ */
 app.post('/modification', async (req, res) => {
     const { username, pass, confirmPass, mail } = req.body;
     console.log('Données reçues du formulaire :', req.body);
@@ -242,6 +281,11 @@ app.post('/modification', async (req, res) => {
 });
 
 
+/**
+ * Endpoint pour récupérer les cours et événements passés d'un utilisateur.
+ * @param {Object} req - Requête HTTP (Express).
+ * @param {Object} res - Réponse HTTP (Express).
+ */
 app.get('/api/past-events/:userId', (req, res) => {
     const userId = req.params.userId;
 
@@ -265,6 +309,12 @@ app.get('/api/past-events/:userId', (req, res) => {
     });
 });
 
+
+/**
+ * Endpoint pour récupérer les cours et événements à venir d'un utilisateur.
+ * @param {Object} req - Requête HTTP (Express).
+ * @param {Object} res - Réponse HTTP (Express).
+ */
 app.get('/api/upcoming-events/:userId', (req, res) => {
     const userId = req.params.userId;
 
@@ -293,8 +343,11 @@ app.get('/api/upcoming-events/:userId', (req, res) => {
 
 
 
-// Pages
-
+/**
+ * Page du tableau de bord d'un professeur.
+ * @param {Object} req - Requête HTTP (Express).
+ * @param {Object} res - Réponse HTTP (Express).
+ */
 app.get('/dashboard-professeur/:id', (req, res) => {
     const userId = req.params.id;
 
@@ -326,6 +379,12 @@ app.get('/dashboard-professeur/:id', (req, res) => {
     });
 });
 
+
+/**
+ * Page du tableau de bord d'un étudiant.
+ * @param {Object} req - Requête HTTP (Express).
+ * @param {Object} res - Réponse HTTP (Express).
+ */
 app.get('/dashboard-etudiant/:id', (req, res) => {
     const userId = req.params.id;
 
@@ -357,21 +416,44 @@ app.get('/dashboard-etudiant/:id', (req, res) => {
     });
 });
 
-
+/**
+ * Page d'accueil.
+ * @param {Object} req - Requête HTTP (Express).
+ * @param {Object} res - Réponse HTTP (Express).
+ */
 app.get('/accueil', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'accueil.html'));
 });
 
+/**
+ * Page de connexion.
+ * @param {Object} req - Requête HTTP (Express).
+ * @param {Object} res - Réponse HTTP (Express).
+ */
 app.get('/login', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'login.html'));
 });
 
-// Fonction pour générer une URL unique
+
+
+/**
+ * Endpoint pour générer une URL unique.
+ * @param {string} id - Identifiant.
+ * @param {string} title - Titre.
+ * @param {string} date - Date.
+ * @param {string} time - Heure.
+ * @returns {string} URL unique générée.
+ */
 const generateUniqueURL = (id, title, date, time) => {
     // Implémentation de votre logique pour générer l'URL unique
     return `${id}-${title}-${date}-${time}`;
 };
 
+/**
+ * Redirection vers une URL unique générée menant vers l'affichage du QR Code.
+ * @param {Object} req - Requête HTTP (Express).
+ * @param {Object} res - Réponse HTTP (Express).
+ */
 app.get('/presqr', (req, res) => {
     const { id, title, date, time } = req.query;
 
@@ -382,6 +464,12 @@ app.get('/presqr', (req, res) => {
     res.redirect(`/presqr/${uniqueURL}`);
 });
 
+
+/**
+ * Page de profil utilisateur.
+ * @param {Object} req - Requête HTTP (Express).
+ * @param {Object} res - Réponse HTTP (Express).
+ */
 app.get('/profile/:id', (req, res) => {
     const userId = req.params.id;
     // Récupérer les données spécifiques à l'utilisateur dans la base de données
@@ -412,6 +500,12 @@ app.get('/profile/:id', (req, res) => {
     });
 });
 
+
+/**
+ * Page des événements.
+ * @param {Object} req - Requête HTTP (Express).
+ * @param {Object} res - Réponse HTTP (Express).
+ */
 app.get('/events/:id', (req, res) => {
     const userId = req.params.id;
     // Récupérer les données spécifiques à l'utilisateur dans la base de données
@@ -445,20 +539,37 @@ app.get('/events/:id', (req, res) => {
 
 // Style et images 
 
+/**
+ * Récupération du fichier de style CSS.
+ * @param {Object} req - Requête HTTP (Express).
+ * @param {Object} res - Réponse HTTP (Express).
+ */
 app.get('/style', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'style.css'));
 });
 
+/**
+ * Récupération du logo.
+ * @param {Object} req - Requête HTTP (Express).
+ * @param {Object} res - Réponse HTTP (Express).
+ */
 app.get('/logo', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'logo.png'));
 });
 
+/**
+ * Récupération du background connexion.
+ * @param {Object} req - Requête HTTP (Express).
+ * @param {Object} res - Réponse HTTP (Express).
+ */
 app.get('/backgroundlogin', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'backgroundlogin.png'));
 });
 
 
-// Écoute du serveur
+/**
+ * Écoute du serveur.
+ */
 app.listen(port, () => {
     console.log(`Serveur en cours d'exécution sur http://localhost:${port}`);
 });
