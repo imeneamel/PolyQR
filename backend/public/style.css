@@ -1331,3 +1331,20 @@ a {
   color: black;
   text-shadow: #313131;
 }
+
+#upcomingEventsTable {
+  width: 100%;
+  border-collapse: collapse; 
+}
+
+#upcomingEventsTable th, #upcomingEventsTable td {
+  border: 1px solid #ddd; 
+  padding: 8px;
+  text-align: left; 
+}
+
+#upcomingEventsTable th {
+  background-color: #3498db; 
+  color: black;
+  text-shadow: 1px 1px 1px #313131; 
+}

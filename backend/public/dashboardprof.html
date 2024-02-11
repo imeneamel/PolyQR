@@ -99,9 +99,27 @@
 			</section>
 		</div>
         <div class="app-body-sidebar">
-            <section class="nextevent-section">
-                <h2>Prochaines rencontres</h2>
+            <section class="event-section">
+                <div class="event-section-header">
+                    <h2>Évènements à venir</h2>
+                </div>
+                <div class="events">
+                    <table id="upcomingEventsTable">
+                        <thead>
+                            <tr>
+                                <th>Titre</th>
+                                <th>Date</th>
+                                <th>Heure</th>
+                                <th>Etat</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Les données des évènements à venir seront ajoutées ici -->
+                        </tbody>
+                    </table>
+                </div>
             </section>
+        
         </div>
     </div>
 </div>
@@ -158,6 +176,37 @@
 						timeCell.textContent = formattedTime;
                     });
                 })
+
+                fetch(`/api/upcoming-events/${userId}`)
+            .then(response => response.json())
+            .then(data => {
+                // Trier les données par date, de la plus proche à la plus lointaine
+                data.sort((a, b) => new Date(a.date) - new Date(b.date));
+
+                // Remplir le tableau avec les données des cours et événements à venir
+                const upcomingEventsTableBody = document.getElementById('upcomingEventsTable').getElementsByTagName('tbody')[0];
+
+                data.forEach(event => {
+                    const row = upcomingEventsTableBody.insertRow();
+                    const titleCell = row.insertCell(0);
+                    const dateCell = row.insertCell(1);
+                    const timeCell = row.insertCell(2);
+                    const launchButtonCell = row.insertCell(3);
+
+                    titleCell.textContent = event.title;
+
+                    // Formater la date (si elle est stockée sous forme de chaîne)
+                    const formattedDate = new Date(event.date).toLocaleDateString();
+                    dateCell.textContent = formattedDate;
+
+                    // Formater l'heure (si elle est stockée sous forme de chaîne)
+                    const formattedTime = new Date(event.time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                    timeCell.textContent = formattedTime;
+
+                    // Ajouter un bouton pour lancer la session (ajuster le lien vers la page appropriée)
+                    launchButtonCell.innerHTML = `<a href="/presqr?id=${userId}&title=${event.title}&date=${formattedDate}&time=${formattedTime}"><button>Lancer</button></a>`;
+                });
+            })
                 .catch(error => console.error('Erreur lors de la récupération des cours et événements passés :', error));
         }
     }

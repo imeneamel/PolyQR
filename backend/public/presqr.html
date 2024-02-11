@@ -49,119 +49,29 @@
                 </div>
             </footer>
         </div>
-        <div class="app-body-main-content">
-			<section class="service-section">
-				<h2>Statistiques</h2>
-				<div class="service-section-header">
-					<div class="search-field">
-						<i class="ph-magnifying-glass"></i>
-						<input type="text" placeholder="Rechercher un évènement">
-					</div>
-					<div class="dropdown-field">
-						<select>
-							<option>Présence</option>
-							<option>Mon activité</option>
-						</select>
-						<i class="ph-caret-down"></i>
-					</div>
-					<button class="flat-button">
-						Valider
-					</button>
-				</div>
-				<div class="mobile-only">
-					<button class="flat-button">
-						Toggle search
-					</button>
-				</div>
-				<div class="tiles">
-					
-				</div>
-			</section>
-			<section class="event-section">
-				<div class="event-section-header">
-					<h2>Evènement passés</h2>
-				</div>
-				<div class="events">
-					<table id="pastEventsTable">
-						<thead>
-							<tr>
-								<th>Titre</th>
-								<th>Description</th>
-								<th>Date</th>
-								<th>Heure</th>
-							</tr>
-						</thead>
-						<tbody>
-							<!-- Les données des cours passés seront ajoutées ici -->
-						</tbody>
-					</table>
-				</div>
-			</section>
-		</div>
-        <div class="app-body-sidebar">
-            <section class="nextevent-section">
-                <h2>Prochaines rencontres</h2>
-            </section>
-        </div>
+        <div id="qrcode"></div>
+
+        <script>
+            const urlParams = new URLSearchParams(window.location.search);
+            const qrData = {
+                id: urlParams.get('id'),
+                title: urlParams.get('title'),
+                date: urlParams.get('date'),
+                time: urlParams.get('time')
+            };
+        
+            const qrcode = new QRCode(document.getElementById("qrcode"), {
+                text: JSON.stringify(qrData),
+                width: 128,
+                height: 128
+            });
+        </script>
+        
     </div>
 </div>
 
 <script>
-    document.addEventListener('DOMContentLoaded', function () {
-        // Récupérer l'URL actuelle
-        var currentUrl = window.location.href;
-
-        // Extraire l'ID de l'URL en utilisant une expression régulière
-        var match = currentUrl.match(/\/dashboard-professeur\/(\d+)/);
-
-        // Vérifier si la correspondance a été trouvée
-    if (match && match[1]) {
-        var userId = match[1];
-
-        // Mettre à jour les liens avec l'ID récupéré
-        var dashboardLink = document.getElementById('dashboardLink');
-        var eventsLink = document.getElementById('eventsLink');
-        var profilLink = document.getElementById('profilLink');
-
-        // Vérifier si les liens ont été trouvés
-        if (dashboardLink && eventsLink && profilLink) {
-            dashboardLink.href = "/dashboard-professeur/" + userId;
-            eventsLink.href = "/events/" + userId;
-            profilLink.href = "/profile/" + userId;
-
-            // Récupérer les cours et événements passés de la base de données
-			fetch(`/api/past-events/${userId}`)
-				.then(response => response.json())
-				.then(data => {
-					// Trier les données par date, de la plus récente à la plus ancienne
-					data.sort((a, b) => new Date(b.date) - new Date(a.date));
-
-					// Remplir le tableau avec les données des cours et événements passés
-					const pastEventsTableBody = document.getElementById('pastEventsTable').getElementsByTagName('tbody')[0];
-
-					data.forEach(event => {
-						const row = pastEventsTableBody.insertRow();
-						const titleCell = row.insertCell(0);
-						const descriptionCell = row.insertCell(1);
-						const dateCell = row.insertCell(2);
-						const timeCell = row.insertCell(3);
-
-						titleCell.textContent = event.title;
-						descriptionCell.textContent = event.description;
-
-						// Formater la date
-						const formattedDate = new Date(event.date).toLocaleDateString();
-						dateCell.textContent = formattedDate;
-
-						// Formater l'heure
-						const formattedTime = new Date(event.time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-						timeCell.textContent = formattedTime;
-                    });
-                })
-                .catch(error => console.error('Erreur lors de la récupération des cours et événements passés :', error));
-        }
-    }
-});
+    
 </script>
 
 </body>

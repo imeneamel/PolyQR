@@ -23,6 +23,9 @@ const db = mysql.createConnection({
 app.post('/signin', (req, res) => {
     const { email, pass } = req.body;
 
+     // Vérifier si l'utilisateur vient de la page /presqr
+     const isFromPresQR = req.headers.referer && req.headers.referer.includes('/presqr');
+
     // Première requête pour obtenir le nom de la table
     db.query('SELECT role FROM professor WHERE email = ? UNION SELECT role FROM student WHERE email = ?', [email, email], (roleErr, roleResults) => {
         if (roleErr) {
@@ -53,6 +56,13 @@ app.post('/signin', (req, res) => {
                                         res.status(500).json({ error: 'Erreur serveur2' });
                                     } else {
                                         if (isMatch) {
+
+                                            if (isFromPresQR) {
+                                                // Marquer l'élève comme présent dans la table de présence
+                                                const courseId = extractCourseIdFromURL(req.headers.referer);
+                                                markStudentPresent(user.user_id, courseId);
+                                            }
+
                                             // L'utilisateur est authentifié avec succès
                                             // Rediriger vers le tableau de bord approprié
                                             const dashboardRoute = (role === 'professor') ? `/dashboard-professeur/${user.user_id}` : `/dashboard-etudiant/${user.user_id}`;
@@ -80,6 +90,27 @@ app.post('/signin', (req, res) => {
     });
 });
 
+
+// Fonction pour extraire l'ID du cours à partir de l'URL de référence
+const extractCourseIdFromURL = (referer) => {
+    const url = new URL(referer);
+    const courseIdParam = url.searchParams.get('courseId');
+    return courseIdParam;
+};
+
+// Fonction pour marquer l'élève comme présent dans la table de présence
+const markStudentPresent = (studentId, courseId) => {
+    const insertQuery = 'INSERT INTO presence (student_id, course_id, is_present) VALUES (?, ?, ?)';
+    const values = [studentId, courseId, true];
+
+    db.query(insertQuery, values, (insertErr, insertResults) => {
+        if (insertErr) {
+            console.error('Erreur lors de l\'insertion de la présence :', insertErr);
+        } else {
+            console.log('Étudiant marqué présent avec succès.');
+        }
+    });
+};
 
 
 
@@ -234,6 +265,29 @@ app.get('/api/past-events/:userId', (req, res) => {
     });
 });
 
+app.get('/api/upcoming-events/:userId', (req, res) => {
+    const userId = req.params.userId;
+
+    // Requête SQL pour récupérer les cours et événements passés de l'utilisateur
+    // A vérifier pour les injections SQL
+    const pastEventsQuery = `
+        SELECT title, description, eventdate AS date, start_time AS time FROM course
+        WHERE professor_id = ? AND (eventdate > CURRENT_DATE OR (eventdate = CURRENT_DATE AND end_time > CURRENT_TIME()))
+        UNION
+        SELECT title, description, eventdate AS date, start_time AS time FROM event
+        WHERE organizer_id = ? AND end_time > NOW();   
+    `;
+
+    db.query(pastEventsQuery, [userId, userId], (err, results) => {
+        if (err) {
+            console.error('Erreur lors de la récupération des cours et événements passés :', err);
+            res.status(500).json({ error: 'Erreur serveur' });
+        } else {
+            res.json(results);
+        }
+    });
+});
+
 
 
 
@@ -312,8 +366,20 @@ app.get('/login', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'login.html'));
 });
 
+// Fonction pour générer une URL unique
+const generateUniqueURL = (id, title, date, time) => {
+    // Implémentation de votre logique pour générer l'URL unique
+    return `${id}-${title}-${date}-${time}`;
+};
+
 app.get('/presqr', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'presqr.html'));
+    const { id, title, date, time } = req.query;
+
+    // Utilisez la fonction de génération d'URL avec les paramètres de requête
+    const uniqueURL = generateUniqueURL(id, title, date, time);
+
+    // Redirigez vers l'URL générée
+    res.redirect(`/presqr/${uniqueURL}`);
 });
 
 app.get('/profile/:id', (req, res) => {
