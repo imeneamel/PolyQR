@@ -1348,3 +1348,7 @@ a {
   color: black;
   text-shadow: 1px 1px 1px #313131; 
 }
+
+.tiles{
+  max-width: 500px;
+}

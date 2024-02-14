@@ -5,6 +5,7 @@
   <title>PolyQR - Dashboard</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/meyer-reset/2.0/reset.min.css">
   <link rel="stylesheet" href="/style">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
 <div class="app">
@@ -20,6 +21,7 @@
                 </h1>
             </div>
         </div>
+        <div style="font-size: xx-large; font-weight: 700;">Bienvenue sur votre dashboard personnel !</div>
     </header>
     <div class="app-body">
         <div class="app-body-navigation">
@@ -73,8 +75,20 @@
 						Toggle search
 					</button>
 				</div>
+                <br>
+                <br>
+                <h3>Mes évènements</h3>
 				<div class="tiles">
-					
+					<div class="activity-chart">
+                        <canvas id="activityChart"></canvas>
+                    </div>
+				</div>
+                <br>
+                <h3>Taux de présence</h3>
+				<div class="tiles">
+					<div class="attendance-chart">
+                        <canvas id="studentsAttendanceChart"></canvas>
+                    </div>
 				</div>
 			</section>
 			<section class="event-section">
@@ -209,9 +223,121 @@
             })
                 .catch(error => console.error('Erreur lors de la récupération des cours et événements passés :', error));
         }
+
+            // Récupérer les données sur les cours passés
+fetch(`/api/past-events/${userId}`)
+    .then(response => response.json())
+    .then(data => {
+        // Créer un objet pour stocker le nombre de cours par jour
+        const courseCountByDay = {};
+
+        // Parcourir les données et compter le nombre de cours par jour
+        data.forEach(course => {
+            // Obtenir la date du cours et extraire le jour
+            const courseDate = new Date(course.date);
+            const dayOfWeek = courseDate.getDay();
+
+            // Initialiser le compteur pour ce jour s'il n'existe pas encore
+            if (!courseCountByDay[dayOfWeek]) {
+                courseCountByDay[dayOfWeek] = 0;
+            }
+
+            // Incrémenter le compteur de cours pour ce jour
+            courseCountByDay[dayOfWeek]++;
+        });
+
+        // Convertir l'objet en labels et valeurs pour le graphique
+        const labels = Object.keys(courseCountByDay).map(day => {
+            // Convertir le numéro du jour en nom de jour (par exemple, 0 pour Dimanche, 1 pour Lundi, etc.)
+            const daysOfWeek = ['Dimanche', 'Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi'];
+            return daysOfWeek[day];
+        });
+        const values = Object.values(courseCountByDay);
+
+        // Créer un nouveau graphique avec Chart.js
+        const ctx = document.getElementById('activityChart').getContext('2d');
+        const activityChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Nombre de cours',
+                    data: values,
+                    backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    })
+    .catch(error => console.error('Erreur lors de la récupération des données d\'activité :', error));
+
+// Récupérer les données sur les cours passés
+fetch(`/api/past-events/${userId}`)
+    .then(response => response.json())
+    .then(data => {
+        // Créer un objet pour stocker le nombre d'étudiants présents par cours
+        const studentsAttendanceByCourse = {};
+
+        // Récupérer les données sur les participations des étudiants
+        fetch(`http://localhost:3000/api/attendance/${userId}`)
+            .then(response => response.json())
+            .then(attendanceData => {
+                // Parcourir les données sur les participations des étudiants
+                attendanceData.forEach(attendance => {
+                    const courseId = attendance.course_id;
+                    // Vérifier si le cours existe déjà dans l'objet
+                    if (!studentsAttendanceByCourse[courseId]) {
+                        studentsAttendanceByCourse[courseId] = 0;
+                    }
+                    // Incrémenter le nombre d'étudiants présents pour ce cours
+                    studentsAttendanceByCourse[courseId]++;
+                });
+
+                // Convertir l'objet en labels et valeurs pour le graphique
+                const labels = Object.keys(studentsAttendanceByCourse);
+                const values = Object.values(studentsAttendanceByCourse);
+
+                // Créer un nouveau graphique avec Chart.js
+                const ctx = document.getElementById('studentsAttendanceChart').getContext('2d');
+                const studentsAttendanceChart = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: 'Nombre d\'étudiants présents',
+                            data: values,
+                            backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                            borderColor: 'rgba(255, 99, 132, 1)',
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        scales: {
+                            y: {
+                                beginAtZero: true
+                            }
+                        }
+                    }
+                });
+            })
+            .catch(error => console.error('Erreur lors de la récupération des données de présence des étudiants :', error));
+    })
+    .catch(error => console.error('Erreur lors de la récupération des données d\'activité :', error));
+
     }
 });
+
+
 </script>
+
 
 </body>
 </html>

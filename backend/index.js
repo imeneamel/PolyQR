@@ -280,6 +280,21 @@ app.post('/modification', async (req, res) => {
     }
 });
 
+// Route pour récupérer les données de présence d'un professeur spécifique
+app.get('/api/attendance/:professorId', (req, res) => {
+    const professorId = req.params.professorId;
+
+    // Effectuer une requête à la base de données pour récupérer les données de présence
+    db.query('SELECT * FROM attendance WHERE course_id IN (SELECT course_id FROM course WHERE professor_id = ?)', [professorId], (error, results) => {
+        if (error) {
+            console.error('Erreur lors de la récupération des données de présence :', error);
+            res.status(500).json({ error: 'Erreur lors de la récupération des données de présence' });
+        } else {
+            res.json(results);
+        }
+    });
+});
+
 
 /**
  * Endpoint pour récupérer les cours et événements passés d'un utilisateur.
