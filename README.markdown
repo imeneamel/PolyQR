@@ -10,14 +10,13 @@ d’évènements à plus grande échelle tels que les forums, c et rencontres av
 - [Installation](#installation)
 - [Lancement de l'Application](#lancement-de-lapplication)
 - [Accès à l'Application](#accès-à-lapplication)
-- [Contribuer](#contribuer)
 - [Licence](#licence)
 
 ## Installation
 
 1. Assurez-vous d'avoir [Node.js](https://nodejs.org/) installé sur votre machine.
 2. Installez les dépendances avec `npm install`.
-3. Naviguez vers le répertoire du projet avec `cd main`.
+3. Naviguez vers le répertoire du projet avec `cd polyqrcode`.
 
 
 ## Lancement de l'Application
